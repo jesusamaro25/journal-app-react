@@ -2,8 +2,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from '../../hooks/useForm';
 import validator from 'validator';
+import { useDispatch } from 'react-redux';
+import { removeError, setError } from '../../actions/ui';
+import { useSelector } from 'react-redux';
+import { startRegistered } from '../../actions/auth';
 
 export const RegisterScreen = () => {
+
+    const { error } = useSelector(state => state.ui)
+
+    const dispatch = useDispatch();
 
     const [formValues, handleInputChange] = useForm({
         name: 'jesus',
@@ -16,16 +24,18 @@ export const RegisterScreen = () => {
 
     const handleRegister = (e) => {
         e.preventDefault();
-       if (isFormValid()) {
-           console.log('works');
-       }
+        if (isFormValid()) {
+            dispatch(startRegistered(email, password, name))
+        }
 
     }
 
     const isFormValid = () => {
         if (name.trim().length === 0 || !validator.isEmail(email) || password !== password2) {
+            dispatch(setError('llena tus datos de manera correcta, por favor.'));
             return false
         }
+        dispatch(removeError())
         return true
     }
     return (
@@ -34,11 +44,16 @@ export const RegisterScreen = () => {
 
             <form onSubmit={handleRegister}>
 
-                <div className='auth__alert-error'>
-                    llena tus datos de manera correcta, por favor.
-                </div>
+                {
+                    error && (
+                        <div className='auth__alert-error'>
+                            {error}
+                        </div>
+                    )
+                }
 
-                <input 
+
+                <input
                     type="text"
                     placeholder="Name"
                     name="name"
@@ -48,7 +63,7 @@ export const RegisterScreen = () => {
                     onChange={handleInputChange}
                 />
 
-                <input 
+                <input
                     type="text"
                     placeholder="Email"
                     name="email"
@@ -58,7 +73,7 @@ export const RegisterScreen = () => {
                     onChange={handleInputChange}
                 />
 
-                <input 
+                <input
                     type="password"
                     placeholder="Password"
                     name="password"
@@ -67,7 +82,7 @@ export const RegisterScreen = () => {
                     onChange={handleInputChange}
                 />
 
-                <input 
+                <input
                     type="password"
                     placeholder="Confirm password"
                     name="password2"
@@ -84,9 +99,9 @@ export const RegisterScreen = () => {
                     Register
                 </button>
 
-               
 
-                <Link 
+
+                <Link
                     to="/auth/login"
                     className="link"
                 >
