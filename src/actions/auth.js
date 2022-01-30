@@ -33,7 +33,7 @@ export const startRegistered = (email, password, name) => { //disparamos una acc
                     login(user.uid, user.displayName))
             })
             .catch(e => {
-                Swal.fire(
+                Swal.fire( //
                     'Error', e.message, 'error'
                 )
                 console.error(e)
